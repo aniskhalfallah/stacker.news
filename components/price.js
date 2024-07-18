@@ -21,7 +21,7 @@ export function usePrice () {
 export function PriceProvider ({ price, children }) {
   const me = useMe()
   const fiatCurrency = me?.privates?.fiatCurrency
-  const { data } = useQuery(PRICE, {
+  const { data, refetch } = useQuery(PRICE, {
     variables: { fiatCurrency },
     ...(SSR
       ? {}
@@ -29,8 +29,15 @@ export function PriceProvider ({ price, children }) {
           pollInterval: NORMAL_POLL_INTERVAL,
           nextFetchPolicy: 'cache-and-network'
         })
-  })
+  });
 
+  useEffect(() => {
+    if (fiatCurrency) {
+      console.log('Calling refetch with fiatCurrency:', fiatCurrency);
+      refetch({ fiatCurrency });
+    }
+  }, [fiatCurrency, refetch]);
+  console.log('Query data:', data);
   const contextValue = useMemo(() => ({
     price: data?.price || price,
     fiatSymbol: CURRENCY_SYMBOLS[fiatCurrency] || '$'
