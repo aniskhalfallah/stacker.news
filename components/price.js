@@ -33,11 +33,9 @@ export function PriceProvider ({ price, children }) {
 
   useEffect(() => {
     if (fiatCurrency) {
-      console.log('Calling refetch with fiatCurrency:', fiatCurrency);
       refetch({ fiatCurrency });
     }
   }, [fiatCurrency, refetch]);
-  console.log('Query data:', data);
   const contextValue = useMemo(() => ({
     price: data?.price || price,
     fiatSymbol: CURRENCY_SYMBOLS[fiatCurrency] || '$'
